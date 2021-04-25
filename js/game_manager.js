@@ -6,6 +6,7 @@ function GameManager(size, InputManager, Actuator, StorageManager) {
 
   this.startTiles     = 2;
 
+  this.inputManager.on("dblclick", this.dblclick.bind(this));
   this.inputManager.on("move", this.move.bind(this));
   this.inputManager.on("restart", this.restart.bind(this));
   this.inputManager.on("keepPlaying", this.keepPlaying.bind(this));
@@ -124,6 +125,21 @@ GameManager.prototype.moveTile = function (tile, cell) {
   this.grid.cells[tile.x][tile.y] = null;
   this.grid.cells[cell.x][cell.y] = tile;
   tile.updatePosition(cell);
+};
+
+GameManager.prototype.dblclick = function (event) {
+  var className = event.target.parentNode.className;
+  var found = className.match(/position-(\d)-(\d)/);
+  if (found) {
+    console.log("found");
+    var x = found[1] - 1;
+    var y = found[2] - 1;
+    cell = { x: x, y: y };
+    tile = this.grid.cellContent(cell);
+    if (tile) {
+      this.grid.removeTile(tile);
+    }
+  }
 };
 
 // Move tiles on the grid in the specified direction

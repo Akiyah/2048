@@ -77,6 +77,13 @@ KeyboardInputManager.prototype.listen = function () {
   var touchStartClientX, touchStartClientY;
   var gameContainer = document.getElementsByClassName("game-container")[0];
 
+  gameContainer.addEventListener("dblclick", function (event) {
+    self.emit("dblclick", event);
+
+    event.preventDefault();
+  });
+
+  var clickCount = 0;
   gameContainer.addEventListener(this.eventTouchstart, function (event) {
     if ((!window.navigator.msPointerEnabled && event.touches.length > 1) ||
         event.targetTouches.length > 1) {
@@ -89,6 +96,15 @@ KeyboardInputManager.prototype.listen = function () {
     } else {
       touchStartClientX = event.touches[0].clientX;
       touchStartClientY = event.touches[0].clientY;
+    }
+
+    if (clickCount == 0) {
+      clickCount++;
+      setTimeout(function() { clickCount = 0; }, 500);
+    } else {
+      event.preventDefault();
+      self.emit("dblclick", event);
+      count = 0;
     }
 
     event.preventDefault();
